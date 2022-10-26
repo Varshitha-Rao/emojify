@@ -16,10 +16,11 @@ from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
 from keras.optimizers import Adam
 from keras import Sequential
+from sklearn.metrics import classification_report
 import os
 
 INIT_LR = 1e-4
-EPOCHS = 15
+EPOCHS = 10
 BS = 32
 
 DIRECTORY = r"C:\Users\HP\OneDrive\Desktop\Emojify\EmojifyDataset"
@@ -96,12 +97,9 @@ model.fit(
     epochs = EPOCHS
 )
 
-model.predict(
-    testX,
-    batch_size = BS,
-    verbose = 1  
-)
+predIdxs = model.predict(testX, batch_size = BS)
+predIdxs = np.argmax(predIdxs, axis = 1)   #to get max value from the array
 
+print(classification_report(testY.argmax(axis = 1), predIdxs, target_names = lb.classes_))
 
-
-    
+model.save("emojify.model", save_format="h5")
